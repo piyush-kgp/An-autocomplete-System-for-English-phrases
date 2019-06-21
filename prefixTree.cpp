@@ -11,6 +11,7 @@ struct trie{
   bool isWordEnd;
 };
 
+
 trie *createTrieNode(){
   trie *temp = new trie;
   for (int i=0; i<NUM_ALPHABETS; i++){
@@ -20,6 +21,7 @@ trie *createTrieNode(){
   return temp;
 }
 
+
 bool isLastNode(trie *root){
   for (int i=0; i<NUM_ALPHABETS; i++){
     if (root->children[i]!=nullptr){
@@ -28,6 +30,7 @@ bool isLastNode(trie *root){
   }
   return true;
 }
+
 
 void getAllWords(trie *root, std::string currPrefix, std::vector<std::string> &words){
   // std::cout<<"called with prefix "<<currPrefix<<'\n';
@@ -48,6 +51,7 @@ void getAllWords(trie *root, std::string currPrefix, std::vector<std::string> &w
 }
 
 
+
 class prefixTree{
 private:
   int num_words;
@@ -61,10 +65,12 @@ public:
   std::vector<std::string> wordsWIthPrefix(std::string key);
 };
 
+
 prefixTree::prefixTree(){
   root = createTrieNode();
   num_words = 0;
 }
+
 
 void prefixTree::insert(std::string key){
   trie *crawler = this->root;
@@ -79,6 +85,7 @@ void prefixTree::insert(std::string key){
   this->num_words++;
 }
 
+
 bool prefixTree::search(std::string key){
   trie *crawler = this->root;
   for (char c: key){
@@ -90,6 +97,7 @@ bool prefixTree::search(std::string key){
   }
   return crawler!=nullptr && crawler->isWordEnd;
 }
+
 
 bool prefixTree::searchPrefix(std::string key){
   trie *crawler = this->root;
@@ -103,9 +111,11 @@ bool prefixTree::searchPrefix(std::string key){
   return crawler!=nullptr;
 }
 
+
 int prefixTree::getNumWords(){
   return this->num_words;
 }
+
 
 std::vector<std::string> prefixTree::wordsWIthPrefix(std::string key){
   if (!this->searchPrefix(key)){
@@ -127,6 +137,7 @@ std::vector<std::string> prefixTree::wordsWIthPrefix(std::string key){
   return words;
 }
 
+
 void test(){
   prefixTree pt;
   pt.insert("thus");
@@ -142,6 +153,7 @@ void test(){
   }
 
 }
+
 
 prefixTree insertFileContent(prefixTree pt, std::string filename){
   std::ifstream file;
@@ -159,6 +171,7 @@ prefixTree insertFileContent(prefixTree pt, std::string filename){
   file.close();
   return pt;
 }
+
 
 void test2(){
   prefixTree pt;
@@ -181,6 +194,8 @@ void test2(){
   std::cout<<"______________________________________________________________\n";
 
 }
+
+
 
 int main(){
   // test();

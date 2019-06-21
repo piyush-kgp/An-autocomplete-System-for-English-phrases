@@ -1,5 +1,5 @@
 
-This is a small demo of an autocomplete system using the powerful prefix tree data structure written in C++.
+This is a small demo of an autocomplete system using Trie data structure written in C++.
 
 Example:
 ```
@@ -15,9 +15,9 @@ ______________________________________________________________
 ```
 
 ### Trie
-Trie or prefix tree is a beautiful data structure. Beautiful because it is extremely efficient for searching with prefixes; O(M) where M is the maximum string length.
+Trie or prefix tree is a beautiful data structure. Beautiful because it is extremely efficient for searching. It can search for a key in O(M) time where M is the maximum string length.
 
-Conceptually `trie` is very similar to any other tree data structure. Every node has 26 children nodes pointers most of which are null pointers, with `trie` pointers at nodes with prefixes.
+Conceptually `trie` is very similar to any other tree data structure. Every node has 26 children pointers most of which are null pointers, with `trie` pointers at nodes with prefixes.
 
 Below is a prefix tree for words ["this", "thin", "there", "thus"].
 
