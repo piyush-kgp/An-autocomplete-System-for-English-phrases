@@ -2,7 +2,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#define NUM_ALPHABETS 26
+#include <fstream>
+#define NUM_ALPHABETS 27
+
 
 struct trie{
   trie *children[NUM_ALPHABETS];
@@ -38,7 +40,7 @@ void getAllWords(trie *root, std::string currPrefix, std::vector<std::string> &w
   }
   for (int i=0; i<NUM_ALPHABETS; i++){
     if (root->children[i]!=nullptr){
-      char c = 'a'+i;
+      char c = (i==NUM_ALPHABETS-1)?' ':('a'+i);
       // currPrefix.push_back(c);
       getAllWords(root->children[i], currPrefix+c, words);
     }
@@ -67,7 +69,7 @@ prefixTree::prefixTree(){
 void prefixTree::insert(std::string key){
   trie *crawler = this->root;
   for (char c: key){
-    int idx = c-'a';
+    int idx = (c==' ')?(NUM_ALPHABETS-1):(c-'a');
     if (crawler->children[idx]==nullptr){
       crawler->children[idx] = createTrieNode();
     }
@@ -80,7 +82,7 @@ void prefixTree::insert(std::string key){
 bool prefixTree::search(std::string key){
   trie *crawler = this->root;
   for (char c: key){
-    int idx = c-'a';
+    int idx = (c==' ')?(NUM_ALPHABETS-1):(c-'a');
     if (crawler->children[idx]==nullptr){
       return false;
     }
@@ -92,7 +94,7 @@ bool prefixTree::search(std::string key){
 bool prefixTree::searchPrefix(std::string key){
   trie *crawler = this->root;
   for (char c: key){
-    int idx = c-'a';
+    int idx = (c==' ')?(NUM_ALPHABETS-1):(c-'a');
     if (crawler->children[idx]==nullptr){
       return false;
     }
@@ -115,7 +117,7 @@ std::vector<std::string> prefixTree::wordsWIthPrefix(std::string key){
   std::vector<std::string> words;
   trie *crawler = this->root;
   for (char c: key){
-    int idx = c-'a';
+    int idx = (c==' ')?(NUM_ALPHABETS-1):(c-'a');
     if (crawler->children[idx]==nullptr){
       return {};
     }
@@ -141,7 +143,47 @@ void test(){
 
 }
 
+prefixTree insertFileContent(prefixTree pt, std::string filename){
+  std::ifstream file;
+  std::string line;
+  file.open(filename);
+  while (std::getline(file, line)){
+    std::string mod_line = "";
+    for (char c: line){
+      if (c>='A' && c<='Z') mod_line.push_back(c+'a'-'A');
+      if (c==' ' || (c>='a' && c<='z')) mod_line.push_back(c);
+    }
+    // std::cout<<mod_line<<'\n';
+    pt.insert(mod_line);
+  }
+  file.close();
+  return pt;
+}
+
+void test2(){
+  prefixTree pt;
+  pt = insertFileContent(pt, "corpora/idioms.txt");
+  pt = insertFileContent(pt, "corpora/proverbs.txt");
+  pt = insertFileContent(pt, "corpora/phrases.txt");
+
+  std::cout<<"every cloud\n--------------------------------------------------------------\n";
+  std::vector<std::string> things = pt.wordsWIthPrefix("every cloud");
+  for (std::string thing: things){
+    std::cout<<thing<<'\n';
+  }
+  std::cout<<"______________________________________________________________\n";
+
+  std::cout<<"every\n--------------------------------------------------------------\n";
+  things = pt.wordsWIthPrefix("every");
+  for (std::string thing: things){
+    std::cout<<thing<<'\n';
+  }
+  std::cout<<"______________________________________________________________\n";
+
+}
+
 int main(){
-  test();
+  // test();
+  test2();
   return 0;
 }
