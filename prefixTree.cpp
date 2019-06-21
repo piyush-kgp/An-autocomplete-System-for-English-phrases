@@ -7,12 +7,14 @@
 
 
 struct trie{
+  // Trie data structure
   trie *children[NUM_ALPHABETS];
   bool isWordEnd;
 };
 
 
 trie *createTrieNode(){
+  // returns a pointer to a Trie Node.
   trie *temp = new trie;
   for (int i=0; i<NUM_ALPHABETS; i++){
     temp->children[i] = nullptr;
@@ -23,6 +25,7 @@ trie *createTrieNode(){
 
 
 bool isLastNode(trie *root){
+  // checks whether the node passes is the last node in the tree.
   for (int i=0; i<NUM_ALPHABETS; i++){
     if (root->children[i]!=nullptr){
       return false;
@@ -33,6 +36,10 @@ bool isLastNode(trie *root){
 
 
 void getAllWords(trie *root, std::string currPrefix, std::vector<std::string> &words){
+  // Given a Trie node "root", appends the "words" vector with all words starting from
+  // that node and prefixes them with currPrefix.
+  // Achieves this functionality through recursion.
+
   // std::cout<<"called with prefix "<<currPrefix<<'\n';
   if (root->isWordEnd){
     words.push_back(currPrefix);
@@ -52,6 +59,7 @@ void getAllWords(trie *root, std::string currPrefix, std::vector<std::string> &w
 
 
 
+// our actual prefix tree class
 class prefixTree{
 private:
   int num_words;
@@ -67,14 +75,17 @@ public:
 
 
 prefixTree::prefixTree(){
+  // constructor method
   root = createTrieNode();
   num_words = 0;
 }
 
 
 void prefixTree::insert(std::string key){
+  // Inserts key into Trie in O(M)
   trie *crawler = this->root;
   for (char c: key){
+    // we have to take space into account. I've relegated to the last index in the children nodes.
     int idx = (c==' ')?(NUM_ALPHABETS-1):(c-'a');
     if (crawler->children[idx]==nullptr){
       crawler->children[idx] = createTrieNode();
@@ -87,6 +98,7 @@ void prefixTree::insert(std::string key){
 
 
 bool prefixTree::search(std::string key){
+  // Searches for a key in Trie in O(M)
   trie *crawler = this->root;
   for (char c: key){
     int idx = (c==' ')?(NUM_ALPHABETS-1):(c-'a');
@@ -100,6 +112,7 @@ bool prefixTree::search(std::string key){
 
 
 bool prefixTree::searchPrefix(std::string key){
+  // similar to the search method above but has a smaller condition (needn't be a word)
   trie *crawler = this->root;
   for (char c: key){
     int idx = (c==' ')?(NUM_ALPHABETS-1):(c-'a');
@@ -113,11 +126,15 @@ bool prefixTree::searchPrefix(std::string key){
 
 
 int prefixTree::getNumWords(){
+  // Returns current number of words in the Trie
   return this->num_words;
 }
 
 
 std::vector<std::string> prefixTree::wordsWIthPrefix(std::string key){
+  // autocomplete function!!
+  // uses a crawler to get to the node at key and then employs the method getAllWords
+
   if (!this->searchPrefix(key)){
     return {};
   }
@@ -139,6 +156,8 @@ std::vector<std::string> prefixTree::wordsWIthPrefix(std::string key){
 
 
 void test(){
+  // Trivial tests
+
   prefixTree pt;
   pt.insert("thus");
   pt.insert("this");
@@ -156,6 +175,8 @@ void test(){
 
 
 prefixTree insertFileContent(prefixTree pt, std::string filename){
+  // Useful to insert content of large files in a Trie.
+
   std::ifstream file;
   std::string line;
   file.open(filename);
@@ -174,6 +195,7 @@ prefixTree insertFileContent(prefixTree pt, std::string filename){
 
 
 void test2(){
+  // Actual Tests.
   prefixTree pt;
   pt = insertFileContent(pt, "corpora/idioms.txt");
   pt = insertFileContent(pt, "corpora/proverbs.txt");
@@ -198,6 +220,7 @@ void test2(){
 
 
 int main(){
+  // Run all.
   // test();
   test2();
   return 0;
